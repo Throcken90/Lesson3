@@ -49,7 +49,7 @@ public class TestAtHome {
         String search_text = search_element.getAttribute("text");
         Assert.assertEquals(
                 "We do not see expected text",
-                "Search…",
+                "Search1…",
                 search_text
 
         );
