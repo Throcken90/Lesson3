@@ -7,10 +7,13 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.server.handler.GetElementDisplayed;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class TestAtHome {
     private AppiumDriver driver;
@@ -25,7 +28,7 @@ public class TestAtHome {
         capabilities.setCapability("automationName", "Appium");
         capabilities.setCapability("appPackage", "org.wikipedia");
         capabilities.setCapability("appActivity", "org.wikipedia.main.MainActivity");
-        capabilities.setCapability("app", "C:\\Users\\Voronkova\\Desktop\\JavaAppiumAutomation\\Apks\\org.wikipedia.apk");
+        capabilities.setCapability("app", "D:\\Java\\Lesson3\\Apks\\org.wikipedia.apk");
         driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
     }
 
@@ -35,7 +38,7 @@ public class TestAtHome {
     }
 
     @Test
-    public void assertElementHasText() {
+    public void searchStringHasRightText() {
         waitForElementAndClick(
                 By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
                 "Cannot find Search Wikipedia input",
@@ -46,13 +49,18 @@ public class TestAtHome {
                 "Cannot find text 'Search…'",
                 15
         );
-        String search_text = search_element.getAttribute("text");
+        String search_id = search_element.getText();
         Assert.assertEquals(
                 "We do not see expected text",
-                "Search1…",
-                search_text
+                "Search…",
+                search_id
 
         );
+        assertElementHasText(By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                "Search…");
+        System.out.println("Right text was found");
+
 
     }
 
@@ -68,11 +76,17 @@ public class TestAtHome {
                 "QA",
                 "Cannot find Search input",
                 5);
-        waitForElementPresent(
-                By.id("org.wikipedia:id/page_list_item_title"),
+        WebElement element;
+        element = waitForElementPresent(
+                By.id("org.wikipedia:id/search_results_list"),
                 "Cannot find page list item",
                 15
         );
+        List<WebElement> childElements = element.findElements(By.id("org.wikipedia:id/page_list_item_container"));
+        String probe = element.getText();
+
+        System.out.println("Element count: " + childElements.size());
+
         waitForElementAndClear(
                 By.id("org.wikipedia:id/search_src_text"),
                 "Cannot search text",
@@ -81,14 +95,44 @@ public class TestAtHome {
         waitForElementAndClick(By.id("org.wikipedia:id/search_close_btn"),
                 "Cannot find X to cancel search",
                 1
-
         );
-
         waitForElementNotPresent(
                 By.id("org.wikipedia:id/search_src_text"),
                 "Text is still present on the page",
                 5
         );
+        System.out.println("The test is passed");
+
+    }
+
+    @Test
+    public void testCheckTitleForAWord() {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                "Java",
+                "Cannot find Search input",
+                5);
+//        WebElement title_element = waitForElementPresent(
+//                By.id("org.wikipedia:id/page_list_item_title"),
+//                "Cannot find article title",
+//                15
+//          );
+        WebElement element;
+        element = waitForElementPresent(
+                By.id("org.wikipedia:id/page_list_item_container"),
+                "Cannot find page list item",
+                15
+        );
+        List<WebElement> childElements = element.findElements(By.id("org.wikipedia:id/page_list_item_title"));
+        String probe = element.getText();
+        System.out.println("Contains sequence 'Java': " + childElements.contains("java"));
+
     }
 
     private WebElement waitForElementAndClick(By by, String error_message, long timeoutInSeconds) {
@@ -124,4 +168,19 @@ public class TestAtHome {
         element.clear();
         return element;
     }
+
+    private boolean assertElementHasText(By by, String error_message, String expected) {
+        WebElement element = waitForElementPresent(by, error_message, 5);
+        String search_text = element.getText();// .getAttribute("");//.getAttribute("text");
+
+        return expected == search_text;
+    }
+
+//    public static Pattern compile(String literal)
+//    {
+//        Pattern pattern = Pattern.compile("java", Pattern.CASE_INSENSITIVE);
+//    return pattern;
+//    }
 }
+
+
