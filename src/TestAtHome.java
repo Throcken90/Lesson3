@@ -125,14 +125,20 @@ public class TestAtHome {
 //          );
         WebElement element;
         element = waitForElementPresent(
-                By.id("org.wikipedia:id/page_list_item_container"),
+                By.id("org.wikipedia:id/search_results_list"),
                 "Cannot find page list item",
                 15
         );
         List<WebElement> childElements = element.findElements(By.id("org.wikipedia:id/page_list_item_title"));
-        String probe = element.getText();
-        System.out.println("Contains sequence 'Java': " + childElements.contains("java"));
-
+        //String probe = element.getText();
+        //System.out.println("size - " + childElements.size());
+        childElements.forEach((el)->{
+            System.out.println("El - " + el.getText()+"; "+el.getText().contains("Java"));
+        boolean search_element = el.getText().contains("Java");
+        Assert.assertEquals(true, el.getText().contains("Java"));
+            System.out.println("The test is OK.");
+        });
+        
     }
 
     private WebElement waitForElementAndClick(By by, String error_message, long timeoutInSeconds) {
