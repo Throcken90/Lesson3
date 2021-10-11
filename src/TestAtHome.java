@@ -138,7 +138,7 @@ public class TestAtHome {
         Assert.assertEquals(true, el.getText().contains("Java"));
             System.out.println("The test is OK.");
         });
-        
+
     }
 
     private WebElement waitForElementAndClick(By by, String error_message, long timeoutInSeconds) {
