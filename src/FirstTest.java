@@ -13,6 +13,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+import java.util.List;
 
 public class FirstTest {
     private AppiumDriver driver;
@@ -186,8 +187,9 @@ driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities
                 "Cannot find input to set name of article folder",
                 5
         );
+        String name_of_folder = "Learning programming";
         waitForElementAndSendKeys(By.id("org.wikipedia:id/text_input"),
-                "Learning programming",
+                name_of_folder,
                 "Cannot put text into article folder input",
                 5
         );
@@ -195,7 +197,7 @@ driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities
                 "Cannot press Ok button ",
                 5
         );
-        waitForElementAndClick(By.xpath("//*[@content-desc='Navigate up']"),
+        waitForElementAndClick(By.xpath("//android.widget.ImageButton[@content-desc='Navigate up']"),
                 "Cannot close article, cannot find X button",
                 5
         );
@@ -203,20 +205,48 @@ driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities
                 "Cannot find navigation button to My Lists",
                 5
         );
-        waitForElementAndClick(By.xpath("//*[@text='Java (programming language)']"),
+        waitForElementAndClick(By.xpath("//*[@text='" + name_of_folder + "']"),
                 "Cannot find created folder",
                 5
         );
-        //swipeElementToLeft(
-        //        By.xpath("//*[@text='Java (programming language)']"),
-        //        "Cannot find saved article",
-        //        5
-//
-        //);
+        swipeElementToLeft(
+                By.xpath("//*[@text='Java (programming language)']"),
+                "Cannot find saved article"
+
+        );
         waitForElementNotPresent(
                 By.xpath("//*[@text='Java (programming language)']"),
                 "Cannot delete saved article",
                 5
+        );
+
+    }
+    @Test
+    public void testAmountOfNotEmptySearch()
+    {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5
+        );
+        String searching_line = "Linkin Park Discography";
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                searching_line,
+                "Cannot find Search input",
+                5
+        );
+        String search_result_locator = "//*[@resource-id=org.wikipedia:id/search_results_list']/*[@resource-id=org.wikipedia:id/page_list_item_container]";
+        waitForElementPresent(By.xpath(search_result_locator),
+                "Cannot find anything by request " + searching_line,
+                15
+        );
+        int amount_of_search_results = getAmountOfElements(
+                By.xpath(search_result_locator)
+        );
+        Assert.assertTrue(
+                "We found too few results",
+                amount_of_search_results > 0
         );
 
     }
@@ -303,10 +333,16 @@ driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities
             int middle_y = (upper_y + lower_y) / 2;
             TouchAction action = new TouchAction(driver);
             action.press(right_x, middle_y)
-                    .waitAction(150)
+                    .waitAction(300)
                     .moveTo(left_x, middle_y)
                     .release()
                     .perform();
     }
-    }
+
+        private int getAmountOfElements(By by)
+        {
+            List elements = driver.findElements(by);
+            return elements.size();
+        }
+}
 
