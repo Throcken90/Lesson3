@@ -236,7 +236,7 @@ driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities
                 "Cannot find Search input",
                 5
         );
-        String search_result_locator = "//*[@resource-id=org.wikipedia:id/search_results_list']/*[@resource-id=org.wikipedia:id/page_list_item_container]";
+        String search_result_locator = "//*[@resource-id='org.wikipedia:id/search_results_list']/*[@resource-id= 'org.wikipedia:id/page_list_item_container']";
         waitForElementPresent(By.xpath(search_result_locator),
                 "Cannot find anything by request " + searching_line,
                 15
