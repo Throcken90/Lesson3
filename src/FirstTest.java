@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -270,7 +271,7 @@ public class FirstTest {
         String empty_result_label = "//*[@text='No results found']";
         waitForElementPresent(
                 By.xpath(empty_result_label),
-                "Cannot find empty result laber by the request" + searching_line,
+                "Cannot find empty result label by the request" + searching_line,
                 15
         );
         assertElementNotPresent(
@@ -300,8 +301,43 @@ public class FirstTest {
                 15
         );
         String title_before_rotation = waitForElementAndGetAtribute(
-                By.id()
-        )
+                By.id("org.wikipedia:id/view_page_title_text"),
+                "text",
+                "Cannot find title of article",
+                15
+        );
+        driver.rotate(ScreenOrientation.LANDSCAPE);
+
+        String title_after_rotation = waitForElementAndGetAtribute(
+                By.id("org.wikipedia:id/view_page_title_text"),
+                "text",
+                "Cannot find title of article",
+                15
+        );
+        Assert.assertEquals(
+                "Article title have been changed after screen rotation",
+                title_before_rotation,
+                title_after_rotation
+        );
+        driver.rotate(ScreenOrientation.PORTRAIT);
+        String title_after_second_rotation = waitForElementAndGetAtribute(
+                By.id("org.wikipedia:id/view_page_title_text"),
+                "text",
+                "Cannot find title of article",
+                15
+        );
+        Assert.assertEquals(
+                "Article title have been changed after screen rotation",
+                title_before_rotation,
+                title_after_second_rotation
+        );
+
+
+
+
+
+
+
     }
 
 
@@ -411,6 +447,6 @@ public class FirstTest {
     }
     private String waitForElementAndGetAtribute(By by, String atribute, String error_message, long timeoutInSeconds) {
         WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
-        return element.getAttribute(atribute)
+        return element.getAttribute(atribute);
     }
 }
