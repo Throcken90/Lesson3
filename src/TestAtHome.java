@@ -1,10 +1,12 @@
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.server.handler.GetElementDisplayed;
@@ -132,14 +134,151 @@ public class TestAtHome {
         List<WebElement> childElements = element.findElements(By.id("org.wikipedia:id/page_list_item_title"));
         //String probe = element.getText();
         //System.out.println("size - " + childElements.size());
-        childElements.forEach((el)->{
-            System.out.println("El - " + el.getText()+"; "+el.getText().contains("Java"));
-        boolean search_element = el.getText().contains("Java");
-        Assert.assertEquals(true, el.getText().contains("Java"));
+        childElements.forEach((el) -> {
+            System.out.println("El - " + el.getText() + "; " + el.getText().contains("Java"));
+            boolean search_element = el.getText().contains("Java");
+            Assert.assertEquals(true, el.getText().contains("Java"));
             System.out.println("The test is OK.");
         });
 
+
     }
+        @Test
+        public void saveArticlesToTheFolder() {
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                "QA",
+                "Cannot find Search input",
+                5);
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id ='org.wikipedia:id/page_list_item_container']//*[@text='Wikimedia disambiguation page']"),
+                "Cannot find Search Wikipedia input",
+                5);
+        waitForElementPresent(
+                By.id("org.wikipedia:id/view_page_title_text"),
+                "Cannot find article title",
+                15
+        );
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageView[@content-desc='More options']"),
+                "Cannot find button to open article options",
+                5
+        );
+        waitForElementAndClick(By.xpath("//*[@text='Add to reading list']"),
+                "Cannot find option to add article to reading list",
+                5
+        );
+        waitForElementAndClick(By.id("org.wikipedia:id/onboarding_button"),
+                "Cannot find got it tip overlay",
+                5
+        );
+        waitForElementAndClear(By.id("org.wikipedia:id/text_input"),
+                "Cannot find input to set name of article folder",
+                5
+        );
+       String name_of_folder = "Software Testing";
+       waitForElementAndSendKeys(By.id("org.wikipedia:id/text_input"),
+               name_of_folder,
+                "Cannot put text into article folder input",
+                5
+       );
+        waitForElementAndClick(By.xpath("//*[@text='OK']"),
+                "Cannot press Ok button ",
+                5
+        );
+        waitForElementAndClick(By.xpath("//android.widget.ImageButton[@content-desc='Navigate up']"),
+                "Cannot close article, cannot find X button",
+                5
+        );
+
+
+
+            waitForElementAndClick(
+                    By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                    "Cannot find Search Wikipedia input",
+                    5
+            );
+
+            waitForElementAndSendKeys(
+                    By.xpath("//*[contains(@text, 'Search…')]"),
+                    "Quality",
+                    "Cannot find Search input",
+                    5);
+            waitForElementAndClick(
+                    By.xpath("//*[@resource-id ='org.wikipedia:id/page_list_item_container']//*[@text='Way of preventing mistakes or defects in manufactured products and avoiding problems when delivering solutions or services to customers; (ISO 9000) part of quality management focused on providing confidence that quality requirements will be fulfilled']"),
+                    "Cannot find Search Wikipedia input",
+                    5);
+            waitForElementPresent(
+                    By.id("org.wikipedia:id/view_page_title_text"),
+                    "Cannot find article title",
+                    15
+            );
+            waitForElementAndClick(
+                    By.xpath("//android.widget.ImageView[@content-desc='More options']"),
+                    "Cannot find button to open article options",
+                    5
+            );
+            waitForElementAndClick(By.xpath("//*[@text='Add to reading list']"),
+                    "Cannot find option to add article to reading list",
+                    5
+            );
+            waitForElementAndClick(By.id("org.wikipedia:id/item_title"),
+                    "Cannot find got it tip overlay",
+                    5
+            );
+
+            waitForElementAndClick(By.xpath("//android.widget.ImageButton[@content-desc='Navigate up']"),
+                    "Cannot close article, cannot find X button",
+                    5
+            );
+            waitForElementAndClick(By.xpath("//android.widget.FrameLayout[@content-desc='My lists']"),
+                    "Cannot find My lists,cannot click it",
+                    5
+            );
+            waitForElementAndClick(By.id("org.wikipedia:id/item_title"),
+                    "Cannot find got it tip overlay",
+                    5
+            );
+            swipeElementToLeft(
+                    By.xpath("//*[@text='Quality assurance']"),
+                    "Cannot find saved article"
+
+            );
+            waitForElementNotPresent(
+                    By.xpath("//*[@text='Quality assurance']"),
+                    "Cannot delete saved article",
+                    5
+            );
+            waitForElementAndClick(By.id("org.wikipedia:id/item_title"),
+                    "Cannot find got it tip overlay",
+                    5
+            );
+//            waitForElementPresent(
+//                    By.id("org.wikipedia:id/page_list_item_title"),
+//                    "Cannot find article title",
+//                    15
+//            );
+            WebElement title_element = waitForElementPresent(
+                    By.id("org.wikipedia:id/page_list_item_title"),
+                    "Cannot find article title",
+                    15
+            );
+            String article_title = title_element.getAttribute("text");
+
+            Assert.assertEquals(
+                    "We see unexpected title",
+                    "Java (programming language)",
+                    article_title
+            );
+    }
+
+
 
     private WebElement waitForElementAndClick(By by, String error_message, long timeoutInSeconds) {
         WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
@@ -181,12 +320,30 @@ public class TestAtHome {
 
         return expected == search_text;
     }
+    protected void swipeElementToLeft(By by, String error_message) {
+        WebElement element = waitForElementPresent(
+                by,
+                error_message,
+                10);
+        int left_x = element.getLocation().getX();
+        int right_x = left_x + element.getSize().getWidth();
+        int upper_y = element.getLocation().getY();
+        int lower_y = upper_y + element.getSize().getHeight();
+        int middle_y = (upper_y + lower_y) / 2;
+        TouchAction action = new TouchAction(driver);
+        action.press(right_x, middle_y)
+                .waitAction(300)
+                .moveTo(left_x, middle_y)
+                .release()
+                .perform();
+    }
+    }
 
 //    public static Pattern compile(String literal)
 //    {
 //        Pattern pattern = Pattern.compile("java", Pattern.CASE_INSENSITIVE);
 //    return pattern;
 //    }
-}
+
 
 
