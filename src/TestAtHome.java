@@ -273,7 +273,7 @@ public class TestAtHome {
 
             Assert.assertEquals(
                     "We see unexpected title",
-                    "Java (programming language)",
+                    "QA",
                     article_title
             );
     }
