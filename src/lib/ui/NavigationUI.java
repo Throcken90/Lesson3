@@ -14,7 +14,7 @@ public void  clickMyLists()
 {
     this.waitForElementAndClick(By.xpath(MY_LISTS_LINK),
             "Cannot find navigation button to My Lists",
-            5
+            20
     );
 }
 }

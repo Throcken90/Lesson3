@@ -9,7 +9,7 @@ public class ArticlePageObject extends MainPageObject{
     TITLE = "org.wikipedia:id/view_page_title_text",
     FOOTER_ELEMENT = "//*[@text='View page in browser']",
     OPTIONS_BUTTON = "//android.widget.ImageView[@content-desc='More options']",
-    OPTIONS_ADD_TO_MY_LIST_BUTTON = "//*[@text='Add to reading list']",
+    OPTIONS_ADD_TO_MY_LIST_BUTTON = "//*[@resource-id ='org.wikipedia:id/title' and @text='Add to reading list']",
     ADD_TO_MY_LIST_OVERLAY = "org.wikipedia:id/onboarding_button",
     MY_LIST_NAME_INPUT = "org.wikipedia:id/text_input",
     MY_LIST_OK_BUTTON = "//*[@text='OK']",
@@ -40,7 +40,7 @@ public void addArticleToMyList(String name_of_folder)
     this.waitForElementAndClick(
             By.xpath(OPTIONS_BUTTON),
             "Cannot find button to open article options",
-            5
+            15
     );
     this.waitForElementAndClick(By.xpath(OPTIONS_ADD_TO_MY_LIST_BUTTON),
             "Cannot find option to add article to reading list",

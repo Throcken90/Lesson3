@@ -78,7 +78,7 @@ public class MainPageObject {
         int already_swiped = 0;
         while (driver.findElements(by).size() == 0) {
             if (already_swiped > max_swipes) {
-                waitForElementPresent(by, "Cannot find element by swiping up, \n" + error_message, 0);
+                waitForElementPresent(by, "Cannot find element by swiping up, " + error_message, 5);
 
                 return;
             }
@@ -116,7 +116,7 @@ public class MainPageObject {
     {
         int amount_of_elements = getAmountOfElements(by);
         if (amount_of_elements > 0) {
-            String default_message = "An element'" + by.toString() + "'supposed to be not present";
+            String default_message = "An element'" + by.toString() + "supposed to be not present";
             throw new AssertionError(default_message + " " + error_message);
         }
     }
