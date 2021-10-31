@@ -13,7 +13,7 @@ public class MyListsPageObject extends MainPageObject {
     }
     private static String getSavedArticleXpathByTitle(String article_title )
     {
-        return FOLDER_BY_NAME_TPL.replace("{TITLE}", article_title);
+        return ARTICLE_BY_TITLE_TPL.replace("{TITLE}", article_title);
     }
     public MyListsPageObject(AppiumDriver driver)
     {
@@ -22,14 +22,23 @@ public class MyListsPageObject extends MainPageObject {
 public void openFolderByName(String name_of_folder)
 {
     String folder_name_xpath = getFolderXpathByName(name_of_folder);
-    this.waitForElementAndClick(By.xpath("//*[@text='" + name_of_folder + "']"),
+    this.waitForElementAndClick(By.xpath(folder_name_xpath),
             "Cannot find folder by name" + name_of_folder,
             5
     );
 }
+    public void waitForArticleToAppearByTitle(String article_title)
+    {
+        String article_xpath = getSavedArticleXpathByTitle(article_title);
+        this.waitForElementPresent(
+                By.xpath(article_xpath),
+                "Cannot find saved article by title " + article_title,
+                15
+        );
+    }
 public void waitForArticleToDisappearByTitle(String article_title)
 {
-    String article_xpath = getFolderXpathByName(article_title)
+    String article_xpath = getFolderXpathByName(article_title);
     this.waitForElementNotPresent(
             By.xpath(article_xpath),
             "Saved article is still present with title " + article_title,
@@ -38,6 +47,7 @@ public void waitForArticleToDisappearByTitle(String article_title)
 }
 public void swipeByArticleToDelete(String article_title)
 {
+    this.waitForArticleToAppearByTitle(article_title);
     String article_xpath = getFolderXpathByName(article_title);
     this.swipeElementToLeft(
             By.xpath(article_xpath),

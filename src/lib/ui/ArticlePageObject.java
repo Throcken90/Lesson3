@@ -13,7 +13,7 @@ public class ArticlePageObject extends MainPageObject{
     ADD_TO_MY_LIST_OVERLAY = "org.wikipedia:id/onboarding_button",
     MY_LIST_NAME_INPUT = "org.wikipedia:id/text_input",
     MY_LIST_OK_BUTTON = "//*[@text='OK']",
-    CLOSE_ARTICLE_BUTTON = "//android.widget.FrameLayout[@content-desc='My lists']"
+    CLOSE_ARTICLE_BUTTON = "//android.widget.ImageButton[@content-desc='Navigate up']";
 
 
 

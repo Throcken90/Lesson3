@@ -79,6 +79,7 @@ public class FirstTest extends CoreTestCase {
         NavigationUI.clickMyLists();
         MyListsPageObject MyListsPageObject = new MyListsPageObject(driver);
         MyListsPageObject.openFolderByName(name_of_folder);
+        MyListsPageObject.swipeByArticleToDelete(article_title);
 
 
 
