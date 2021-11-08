@@ -2,6 +2,9 @@ package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 public class SearchPageObject extends MainPageObject{
     private static final String
@@ -10,7 +13,9 @@ public class SearchPageObject extends MainPageObject{
         SEARCH_CANCEL_BUTTON = "org.wikipedia:id/search_close_btn",
         SEARCH_RESULT_BY_SUBSTRING_TPL = "//*[@resource-id ='org.wikipedia:id/page_list_item_container']//*[@text='{SUBSTRING}']",
         SEARCH_RESULT_ELEMENT = "//*[@resource-id='org.wikipedia:id/search_results_list']/*[@resource-id='org.wikipedia:id/page_list_item_container']",
-        SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results found']";
+        SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results found']",
+        SEARCH_RESULT_LIST = "org.wikipedia:id/search_results_list",
+        PAGE_LIST_ITEM_CONTAINER = "org.wikipedia:id/page_list_item_container";
 
     public SearchPageObject(AppiumDriver driver)
     {
@@ -30,6 +35,7 @@ public class SearchPageObject extends MainPageObject{
     public void waitForCancelButtonToAppear() {
         this.waitForElementPresent(By.id(SEARCH_CANCEL_BUTTON), "Cannot find search cancel button", 5);
     }
+
     public void waitForCancelButtonToDisappear()
     {
         this.waitForElementNotPresent(By.id(SEARCH_CANCEL_BUTTON), "Search cancel button is still present", 5);
@@ -59,9 +65,8 @@ public class SearchPageObject extends MainPageObject{
                 15
         );
                 return this.getAmountOfElements(By.xpath(SEARCH_RESULT_ELEMENT));
-
     }
-    public void waitForEmptyResultLabel()
+        public void waitForEmptyResultLabel()
     {
         this.waitForElementPresent(By.xpath(SEARCH_EMPTY_RESULT_ELEMENT), "Cannot find empty result label", 5);
     }
@@ -69,4 +74,16 @@ public class SearchPageObject extends MainPageObject{
     {
         this.assertElementNotPresent(By.xpath(SEARCH_RESULT_ELEMENT), "We supposed not to find any results");
     }
+
+    public void getAmountOfWebElements() {
+        WebElement element;
+
+        element = this.waitForElementPresent(By.id(SEARCH_RESULT_LIST), "Cannot find search result list", 5);
+
+        List<WebElement> childElements = element.findElements(By.id(PAGE_LIST_ITEM_CONTAINER));
+        int amount_of_elements = childElements.size();
+        System.out.println("Element count: " + amount_of_elements);
+
+    }
+
 }

@@ -3,6 +3,10 @@ package tests;
 import lib.CoreTestCase;
 import lib.ui.SearchPageObject;
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+import java.util.List;
 
 public class SearchTests extends CoreTestCase
 {
@@ -13,6 +17,16 @@ public class SearchTests extends CoreTestCase
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine("Java");
         SearchPageObject.waitForSearchResult("Object-oriented programming language");
+    }
+    @Test
+    public void testSearchAndCancel()
+    {
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject.initSearchInput();
+        SearchPageObject.typeSearchLine("QA");
+        SearchPageObject.getAmountOfWebElements();
+        SearchPageObject.clickCancelButton();
+        SearchPageObject.waitForCancelButtonToDisappear();
     }
 
     @Test
